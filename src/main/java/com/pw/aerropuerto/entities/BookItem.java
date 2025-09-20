@@ -1,4 +1,29 @@
 package com.pw.aerropuerto.entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "bookitems")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BookItem {
+@Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    //crear cabin con una numeración//
+    @Column(nullable = false)
+    private BigDecimal price;
+    @Column(nullable = false)
+    private Integer segmentOrder;
+    @Column(nullable = false)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+    @Column(nullable = false)
+    private Flight flight;
+
 }

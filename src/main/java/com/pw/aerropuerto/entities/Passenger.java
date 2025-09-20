@@ -1,0 +1,29 @@
+package com.pw.aerropuerto.entities;
+
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Set;
+
+@Entity
+@Table(name = "passengers")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Passenger {
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long Id;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
+    private String email;
+    @Column(nullable = false)
+    private PassengerProfile profile;
+    @OneToMany(mappedBy = "Passenger")
+    private Set<Booking> bookings;
+    @OneToOne(mappedBy = "Passenger")
+    private PassengerProfile PassengerProfile;
+}

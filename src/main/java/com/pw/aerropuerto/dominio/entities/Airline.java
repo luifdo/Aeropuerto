@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table (name = "airlines")
@@ -14,11 +15,22 @@ import java.util.List;
 @Builder
 public class Airline {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    private String name;
-    private String code;
-    private List<Flight> flights;
 
-    @Builder.Default
+    @Column(nullable = false, unique = true)
+    private long id;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false, length = 2, unique = true)
+    private String code;
+
+    @OneToMany (mappedBy = "airline")
+    private Set<Flight> flights;
+
+    public void addFlight(Flight flight) {
+        flights.add(flight);
+        flight.setAirline(this);
+    }
+
+
 
 }

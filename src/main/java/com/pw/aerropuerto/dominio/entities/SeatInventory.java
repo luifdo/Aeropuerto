@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "setInventory")
+@Table(name = "seatInventory")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,11 +12,20 @@ import lombok.*;
 @Builder
 public class SeatInventory {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long id;
-    Cabin Cabin;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Cabin Cabin;
+    @Column(nullable = false)
     private Integer totalSeats;
+    @Column(nullable = false)
     private Integer availableSeats;
-    Flight flight;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "flight_id")
+    private Flight flight;
 
 }

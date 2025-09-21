@@ -1,46 +1,41 @@
 package com.pw.aerropuerto.dominio.entities;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name = "airports")
 public class Airport {
 
     @Id @GeneratedValue (strategy = GenerationType.AUTO)
 
-    @Column(nullable = false)
+
     private Long id;
-
-
-    @Column(nullable = false)
+    @Column(name = "iata_code", length = 3, nullable = false, unique = true)
     String Code;
     @Column(nullable = false)
     String Name;
     @Column(nullable = false)
     String City;
 
-    @ManyToMany
-    @JoinTable(
-            name = "AIRPORT_ID",
-            joinColumns = @JoinColumn(name = "AIRPORT_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "FLIGHT_ID",referencedColumnName = "id")
-    )
-    private List<Flight> flights = new ArrayList<>();
+    @OneToMany (mappedBy = "Origin")
+    @Builder.Default
+    private Set<Flight> flights = new HashSet<>();
 
-    public void addFlight(Flight flight) {
-        this.flights.add(flight);
-    }
+    @OneToMany (mappedBy = "destination")
+    @Builder.Default
+    private Set<Flight> destinations = new HashSet<>();
+
+
 
 
 

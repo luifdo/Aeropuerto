@@ -3,6 +3,7 @@ package com.pw.aerropuerto.dominio.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -15,8 +16,15 @@ import java.util.Set;
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long id;
+    @Column(nullable = false)
     private String name;
-    Set<Flight> flights;
+
+    @Builder.Default
+    @ManyToMany (mappedBy = "tags")
+    Set<Flight> flights = new HashSet<>();
+
+
 
 }

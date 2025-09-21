@@ -18,7 +18,7 @@ public class PassengerProfile {
     private String phone;
     @Column(nullable = false)
     private String countryCode;
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name ="passenger_id", referencedColumnName = "id")
     private Passenger passenger;
 }

@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "seatInventory")
+@Table(name = "seatInventory", uniqueConstraints = @UniqueConstraint(name = "uk_seat_inventory_flight_cabin",
+        columnNames = {"flight_id", "cabin"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,7 +25,7 @@ public class SeatInventory {
     @Column(nullable = false)
     private Integer availableSeats;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id")
     private Flight flight;
 

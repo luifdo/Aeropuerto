@@ -18,7 +18,7 @@ public class SeatInventory {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private Cabin Cabin;
     @Column(nullable = false)
     private Integer totalSeats;

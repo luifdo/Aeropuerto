@@ -1,4 +1,4 @@
-package com.pw.aerropuerto.entities;
+package com.pw.aerropuerto.dominio.entities;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter

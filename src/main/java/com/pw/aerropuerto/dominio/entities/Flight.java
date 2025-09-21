@@ -1,4 +1,4 @@
-package com.pw.aerropuerto.entities;
+package com.pw.aerropuerto.dominio.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

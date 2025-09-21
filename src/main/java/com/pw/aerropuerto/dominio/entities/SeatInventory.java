@@ -14,7 +14,7 @@ public class SeatInventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    Cabin Cabin
+    Cabin Cabin;
     private Integer totalSeats;
     private Integer availableSeats;
     Flight flight;

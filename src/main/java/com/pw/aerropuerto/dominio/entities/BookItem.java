@@ -15,7 +15,9 @@ import java.math.BigDecimal;
 public class BookItem {
 @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    //crear cabin con una numeración//
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Cabin cabin;
     @Column(nullable = false)
     private BigDecimal price;
     @Column(nullable = false)
@@ -25,5 +27,6 @@ public class BookItem {
     private Booking booking;
     @Column(nullable = false)
     private Flight flight;
+
 
 }

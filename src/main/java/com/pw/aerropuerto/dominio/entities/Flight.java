@@ -25,16 +25,16 @@ public class Flight {
     private OffsetDateTime departureTime;
     @Column(nullable = false)
     private OffsetDateTime arrivalTime;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "airline_id")
     private Airline airline;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "origin_airport_id")
     private Airport origin;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "destination_airport_id")
     private Airport destination;
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.LAZY)
     @JoinTable(
             name = "flight_tags",
             joinColumns = @JoinColumn(name = "flight_id"),

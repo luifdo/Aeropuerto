@@ -2,19 +2,20 @@ package com.pw.aerropuerto.dominio.repositories;
 
 import com.pw.aerropuerto.dominio.entities.Booking;
 import com.pw.aerropuerto.dominio.entities.Passenger;
-import lombok.var;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import java.awt.print.Pageable;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class BookingRespositoryTest extends AbstractRepositoryIT{
+
+public class BookingRespositoryTest extends AbstractRepositoryIT {
     @Autowired
     private TestEntityManager entityManager;
 
@@ -25,23 +26,25 @@ public class BookingRespositoryTest extends AbstractRepositoryIT{
     @DisplayName("")
     void testGetBookingsByEmail() {
 
-        var
-
         Passenger passenger = new Passenger();
         passenger.setEmail("test@example.com");
-        entityManager.persist(passenger);
+        passenger = entityManager.persistAndFlush(passenger);
 
-        // Crear booking asociado
         Booking booking = new Booking();
         booking.setPassenger(passenger);
-        booking.setCreatedAt(LocalDateTime.now());
-        entityManager.persist(booking);
 
-        entityManager.flush();
+        booking.setCreatedAt(OffsetDateTime.now());
+        booking = entityManager.persistAndFlush(booking);
 
-        Pageable pageable = PageRequest.of(0, 10);
+
+        entityManager.clear();
+
+        PageRequest pageable = PageRequest.of(0, 10);
         Page<Booking> bookings = bookingRepository.getBookingsByEmail("TEST@EXAMPLE.COM", pageable);
 
-        assertThat(bookings).isNotEmpty();
-        assertThat(bookings.getContent().get(0).getPassenger().getEmail()).isEqualTo("test@example.com");
+
+        assertThat(bookings).isNotNull();
+        assertThat(bookings.getContent()).isNotEmpty();
+        assertThat(bookings.getContent().get(0).getPassenger()).isNotNull();
+        assertThat(bookings.getContent().get(0).getPassenger().getEmail()).isEqualTo("test@example.com");}
 }

@@ -11,6 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class PassengerProfile {
+    @Id
+    private Long id;
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long Id;

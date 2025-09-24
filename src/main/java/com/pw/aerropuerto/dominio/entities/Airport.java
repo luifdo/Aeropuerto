@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "airports")
+@NoArgsConstructor
 public class Airport {
 
     @Id @GeneratedValue (strategy = GenerationType.AUTO)
@@ -34,8 +35,6 @@ public class Airport {
     @OneToMany (mappedBy = "destination")
     @Builder.Default
     private Set<Flight> destinations = new HashSet<>();
-
-
 
 
 

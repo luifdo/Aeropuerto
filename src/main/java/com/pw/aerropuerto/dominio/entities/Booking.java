@@ -18,8 +18,11 @@ public class Booking {
     private Long id;
     @Column(nullable = false)
     private OffsetDateTime createdAt;
-    @Column (nullable = false)
-    private List<BookItem> Items;
+
+    @OneToMany(mappedBy = "booking")
+    private List<BookItem> items;
+
+    @ManyToOne
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 }

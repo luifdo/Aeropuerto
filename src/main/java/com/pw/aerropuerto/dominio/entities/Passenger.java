@@ -20,10 +20,10 @@ public class Passenger {
     private String name;
     @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
-    private PassengerProfile profile;
-    @OneToMany(mappedBy = "Passenger")
+
+    @OneToOne(mappedBy = "passenger")
+    private PassengerProfile passengerProfile;
+
+    @OneToMany(mappedBy = "passenger")
     private Set<Booking> bookings;
-    @OneToOne(mappedBy = "Passenger")
-    private PassengerProfile PassengerProfile;
 }

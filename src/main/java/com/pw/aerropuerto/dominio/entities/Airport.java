@@ -22,11 +22,11 @@ public class Airport {
 
     private Long id;
     @Column(name = "iata_code", length = 3, nullable = false, unique = true)
-    String Code;
+    private String Code;
     @Column(nullable = false)
-    String Name;
+    private String Name;
     @Column(nullable = false)
-    String City;
+    private String City;
 
     @OneToMany (mappedBy = "Origin")
     @Builder.Default

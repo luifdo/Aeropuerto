@@ -15,7 +15,7 @@ public class BookingMapper {
     }
     public static BookingDtos.BookingResponse toResponse(Booking entity) {
         return new BookingDtos.BookingResponse(entity.getId(), entity.getCreatedAt(),
-                entity.getItems().stream().map(BookItemMapper::toresponse).toList(),
+                entity.getItems().stream().map(BookItemMapper::ToResponse).toList(),
                 entity.getPassenger().getId());
     }
     public static void patch(Booking entity, BookingDtos.BookingUpdateRequest request, Passenger passenger, List<BookItem> items) {

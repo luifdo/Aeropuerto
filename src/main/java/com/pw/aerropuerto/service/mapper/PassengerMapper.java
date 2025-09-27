@@ -5,7 +5,7 @@ import com.pw.aerropuerto.api.dto.PassangerDtos;
 import com.pw.aerropuerto.dominio.entities.Passenger;
 import com.pw.aerropuerto.dominio.entities.PassengerProfile;
 
-public class PassangerMapper {
+public class PassengerMapper {
     public static Passenger ToEntity(PassangerDtos.PassengerCreateRequest request){
         var profile = request.profile() == null
                 ? null
@@ -24,7 +24,7 @@ public class PassangerMapper {
         return new PassangerDtos.PassengerResponse(passenger.getId(), passenger.getName(), passenger.getEmail(),  dtoProfile);
     }
 
-    public  static void path(Passenger entity, PassangerDtos.PassengerUpdateRequest request){
+    public  static void path(Passenger entity, PassangerDtos.PassengerCreateRequest request){
         if (request.name() != null ) entity.setName(request.name());
         if (request.email() != null) entity.setEmail(request.email());
         if (request.profile() != null){

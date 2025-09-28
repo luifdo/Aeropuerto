@@ -25,4 +25,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
+
+    public void addItem(BookItem item) {
+        items.add(item);
+        item.setBooking(this);
+    }
+
 }

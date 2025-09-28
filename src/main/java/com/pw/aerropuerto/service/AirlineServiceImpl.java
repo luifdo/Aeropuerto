@@ -31,11 +31,11 @@ public class AirlineServiceImpl implements AirlineService {
                 .orElseThrow(() -> new NotFoundException("Airline %d not found".formatted(id)));
     }
 
-    @Override
+    @Override @Transactional(readOnly = true)
     public AirlineResponse getByCode(String code) {
         return repository.findByCode(code)
                 .map(AirlineMapper::ToResponse)
-                .orElseThrow(() -> new NotFoundException("Airline %d not found".formatted(code)));
+                .orElseThrow(() -> new NotFoundException("Airline %s not found".formatted(code)));
     }
 
     @Override

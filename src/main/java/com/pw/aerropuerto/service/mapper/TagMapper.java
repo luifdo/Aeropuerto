@@ -26,7 +26,7 @@ public class TagMapper {
                                 )).collect(Collectors.toSet())
         );
     }
-    public static void path(Tag entity,TagDtos.TagCreateRequest request){
-        if(entity.getName() != null) entity.setName(entity.getName());
+    public static void path(Tag entity,TagDtos.TagUpdateRequest request){
+        if(request.name() != null) entity.setName(request.name());
     }
 }

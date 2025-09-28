@@ -3,6 +3,7 @@ package com.pw.aerropuerto.dominio.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.print.attribute.standard.Destination;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,4 +47,5 @@ public class Flight {
         tags.add(tag);
         tag.getFlights().add(this);
     }
+
 }

@@ -1,4 +1,4 @@
 package com.pw.aerropuerto.service;
 
-public class FightService {
+public class FlightService {
 }

@@ -31,18 +31,16 @@ public class BookItemMapper {
         );
     }
 
-    public static void path(BookItem entity, BookItemDtos.BookItemCreateRequest request) {
+    public static void path(BookItem entity, BookItemDtos.BookItemUpdateRequest request) {
         if (request.cabinType() != null) {
             entity.setCabin(Cabin.valueOf(request.cabinType().toUpperCase()));
         }
         if (request.price() != null) {
             entity.setPrice(request.price());
         }
-        if (request.bookingId() != null) {
-            entity.setBooking(Booking.builder().id(request.bookingId()).build());
+        if (request.segmentOrder() != null) {
+            entity.setSegmentOrder(request.segmentOrder());
         }
-        if (request.flightId() != null) {
-            entity.setFlight(Flight.builder().id(request.flightId()).build());
-        }
+
     }
 }

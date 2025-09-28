@@ -36,6 +36,15 @@ public class Airport {
     @Builder.Default
     private Set<Flight> destinations = new HashSet<>();
 
+    public void addFlight(Flight flight) {
+        flights.add(flight);
+        flight.setOrigin(this);
+    }
+    public void addDestination(Flight flight) {
+        destinations.add(flight);
+        flight.setDestination(this);
+    }
+
 
 
 }

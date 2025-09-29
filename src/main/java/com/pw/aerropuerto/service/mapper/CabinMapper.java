@@ -4,7 +4,7 @@ import com.pw.aerropuerto.api.dto.CabinDtos;
 import com.pw.aerropuerto.dominio.entities.Cabin;
 
 public class CabinMapper {
-    public static Cabin ToEntity(CabinDtos.CabinRequest request){
+    public static Cabin ToEntity(CabinDtos.CabinCreateRequest request){
         return request.cabin();
     }
     public static CabinDtos.CabinResponse ToResponse(Cabin cabin){

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 public interface FlightService {
     FlightResponse create(FlightCreateRequest req);
     FlightResponse get(Long id);
-    Page<FlightService> list(Pageable pageable);
+    Page<FlightResponse> list(Pageable pageable);
     FlightResponse update(Long id, FlightUpdateRequest req);
     void delete(Long id);
 }

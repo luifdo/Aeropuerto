@@ -12,7 +12,7 @@ public interface AirlineService {
     AirlineResponse get(Long id);
     AirlineResponse getByCode(String code);
     Page<AirlineResponse> lis(Pageable pageable);
-    AirlineResponse update(Long id, AirlineCreateRequest request);
+    AirlineResponse update(Long id, AirlineUpdateRequest request);
     void delete(Long id);
 
 

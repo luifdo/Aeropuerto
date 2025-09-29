@@ -45,7 +45,7 @@ public class AirlineServiceImpl implements AirlineService {
     }
 
     @Override
-    public AirlineResponse update(Long id, AirlineCreateRequest request) {
+    public AirlineResponse update(Long id, AirlineUpdateRequest request) {
       Airline airline = repository.findById(id)
               .orElseThrow( () -> new NotFoundException("Airline %d not found".formatted(id)));
 

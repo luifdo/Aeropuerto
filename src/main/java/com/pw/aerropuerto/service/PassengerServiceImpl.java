@@ -45,7 +45,7 @@ public class PassengerServiceImpl implements PassengerService {
 
 
     @Override
-    public PassengerResponse update(Long id, PassengerCreateRequest request) {
+    public PassengerResponse update(Long id, PassengerUpdateRequest request) {
         var m = repository.findById(id).orElseThrow(() -> new NotFoundException("Passenger %d not found".formatted(id)));
         PassengerMapper.path(m,request);
         return PassengerMapper.toResponse(m);

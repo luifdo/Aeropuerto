@@ -7,8 +7,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface BookingItemService {
  BookItemResponse create (BookItemCreateRequest req);
- BookItemResponse get (Long id);
- Page<BookItemDtos> List (Pageable pageable);
+ BookItemResponse get(Long id);
+ Page<BookItemResponse> list(Pageable pageable);
  BookItemResponse update (Long id, BookItemUpdateRequest req);
  void delete (Long id);
+
+
 }

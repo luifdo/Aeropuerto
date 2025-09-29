@@ -10,6 +10,6 @@ public interface PassengerService {
     PassengerResponse get(Long id);
     PassengerResponse getByEmail(String email);
     Page<PassengerResponse> lis(Pageable pageable);
-    PassengerResponse update(Long id, PassengerCreateRequest request);
+    PassengerResponse update(Long id, PassengerUpdateRequest request);
     void delete(Long id);
 }

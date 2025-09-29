@@ -24,7 +24,7 @@ public class PassengerMapper {
         return new PassangerDtos.PassengerResponse(passenger.getId(), passenger.getName(), passenger.getEmail(),  dtoProfile);
     }
 
-    public  static void path(Passenger entity, PassangerDtos.PassengerCreateRequest request){
+    public  static void path(Passenger entity, PassangerDtos.PassengerUpdateRequest request){
         if (request.name() != null ) entity.setName(request.name());
         if (request.email() != null) entity.setEmail(request.email());
         if (request.profile() != null){

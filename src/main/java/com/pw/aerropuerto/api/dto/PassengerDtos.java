@@ -2,7 +2,7 @@ package com.pw.aerropuerto.api.dto;
 
 import java.io.Serializable;
 
-public class PassangerDtos {
+public class PassengerDtos {
     public record PassengerCreateRequest(String name, String email, PassengerProfileDto profile) implements Serializable {
     }
     public record PassengerProfileDto(String phone, String countryCode) implements Serializable{}

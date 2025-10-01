@@ -9,9 +9,9 @@ import org.mapstruct.factory.Mappers;
 
 
 @Mapper (componentModel = "Spring")
-public interface BookIteaMapper {
+public interface BookIteamMapper {
 
-    BookIteaMapper instance = Mappers.getMapper(BookIteaMapper.class);
+    BookIteamMapper instance = Mappers.getMapper(BookIteamMapper.class);
 
     @Mapping(target = "cabin", expression = "java(cabinFromString(request.cabinType()))")
     @Mapping(target = "booking", expression = "java(new Booking(request.bookingId()))")

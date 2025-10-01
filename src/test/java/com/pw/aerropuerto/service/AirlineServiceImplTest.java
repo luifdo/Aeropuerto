@@ -4,100 +4,136 @@ import com.pw.aerropuerto.api.dto.AirlineDtos.*;
 import com.pw.aerropuerto.dominio.entities.Airline;
 import com.pw.aerropuerto.dominio.repositories.AirlineRepository;
 import com.pw.aerropuerto.exception.NotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AirlineServiceImplTest {
 
     @Mock
-    AirlineRepository repository;
-    @InjectMocks AirlineServiceImpl service;
+    private AirlineRepository repository;
 
-    @Test
-    void create() {
-        var req = new AirlineCreateRequest("avianca","AV");
-        when (repository.save(any())).thenAnswer(invocationOnMock -> {
-            Airline entity = invocationOnMock.getArgument(0);
-            entity.setId(10L);
-            return entity;
-        });
-        var res = service.create(req);
+    @InjectMocks
+    private AirlineServiceImpl service;
 
-        assertThat(res.id()).isEqualTo(10L);
-        assertThat(res.name()).isEqualTo("avianca");
-        assertThat(res.code()).isEqualTo("AV");
-        verify(repository).save(any());
+    private Airline airline;
+
+    @BeforeEach
+    void setUp() {
+        airline = Airline.builder()
+                .id(1L)
+                .name("Avianca")
+                .code("AV")
+                .build();
     }
 
     @Test
-    void get() {
-        var entity = Airline.builder().id(5L).name("LATAM").code("LA").build();
-        when(repository.findById(5L)).thenReturn(Optional.of(entity));
+    void create_ShouldReturnResponse() {
+        AirlineCreateRequest request = new AirlineCreateRequest("Avianca", "AV");
 
-        var res = service.get(5L);
+        when(repository.save(any(Airline.class))).thenReturn(airline);
 
-        assertThat(res.id()).isEqualTo(5L);
-        assertThat(res.name()).isEqualTo("LATAM");
-        assertThat(res.code()).isEqualTo("LA");
+        AirlineResponse response = service.create(request);
+
+        assertThat(response).isNotNull();
+        assertThat(response.name()).isEqualTo("Avianca");
+        assertThat(response.code()).isEqualTo("AV");
+        verify(repository).save(any(Airline.class));
     }
 
     @Test
-    void getByCode() {
-        when(repository.findByCode("XX")).thenReturn(java.util.Optional.empty());
+    void get_ShouldReturnResponse_WhenExists() {
+        when(repository.findById(1L)).thenReturn(Optional.of(airline));
+
+        AirlineResponse response = service.get(1L);
+
+        assertThat(response).isNotNull();
+        assertThat(response.name()).isEqualTo("Avianca");
+    }
+
+    @Test
+    void get_ShouldThrow_WhenNotExists() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.get(99L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Airline 99 not found");
+    }
+
+    @Test
+    void getByCode_ShouldReturnResponse_WhenExists() {
+        when(repository.findByCode("AV")).thenReturn(Optional.of(airline));
+
+        AirlineResponse response = service.getByCode("AV");
+
+        assertThat(response).isNotNull();
+        assertThat(response.code()).isEqualTo("AV");
+    }
+
+    @Test
+    void getByCode_ShouldThrow_WhenNotExists() {
+        when(repository.findByCode("XX")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getByCode("XX"))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("Airline XX not found");
+                .hasMessageContaining("Airline XX not found");
     }
 
     @Test
-    void lis() {
-        var entity = Airline.builder().id(1L).name("VivaAir").code("VV").build();
-        var page = new PageImpl<>(List.of(entity));
-        var pageable = PageRequest.of(0, 2);
+    void list_ShouldReturnPagedResponses() {
+        Page<Airline> page = new PageImpl<>(List.of(airline));
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
-        when(repository.findAll(pageable)).thenReturn(page);
+        Page<AirlineResponse> result = service.lis(Pageable.unpaged());
 
-        var res = service.lis(pageable);
-
-        assertThat(res.getTotalElements()).isEqualTo(1);
-        assertThat(res.getContent().get(0).code()).isEqualTo("VV");
+        assertThat(result).hasSize(1);
+        assertThat(result.getContent().get(0).name()).isEqualTo("Avianca");
     }
 
     @Test
-    void update() {
-        var entity = Airline.builder().id(7L).name("OldName").code("ON").build();
-        when(repository.findById(7L)).thenReturn(Optional.of(entity));
-        when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    void update_ShouldModifyAndReturnResponse() {
+        AirlineUpdateRequest request = new AirlineUpdateRequest("Latam", "LA");
+        when(repository.findById(1L)).thenReturn(Optional.of(airline));
+        when(repository.save(any(Airline.class))).thenReturn(
+                Airline.builder().id(1L).name("Latam").code("LA").build()
+        );
 
-        var req = new AirlineUpdateRequest("NewName", "NN");
-        var res = service.update(7L, req);
+        AirlineResponse response = service.update(1L, request);
 
-        assertThat(res.name()).isEqualTo("NewName");
-        assertThat(res.code()).isEqualTo("NN");
-        verify(repository).save(entity);
+        assertThat(response.name()).isEqualTo("Latam");
+        assertThat(response.code()).isEqualTo("LA");
+        verify(repository).save(any(Airline.class));
     }
 
     @Test
-    void delete() {
-        service.delete(12L);
+    void update_ShouldThrow_WhenNotExists() {
+        AirlineUpdateRequest request = new AirlineUpdateRequest("Latam", "LA");
+        when(repository.findById(99L)).thenReturn(Optional.empty());
 
-        verify(repository).deleteById(12L);
+        assertThatThrownBy(() -> service.update(99L, request))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Airline 99 not found");
+    }
 
+    @Test
+    void delete_ShouldCallRepository() {
+        doNothing().when(repository).deleteById(1L);
+
+        service.delete(1L);
+
+        verify(repository).deleteById(1L);
     }
 }

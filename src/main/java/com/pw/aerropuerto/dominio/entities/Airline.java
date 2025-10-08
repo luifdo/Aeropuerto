@@ -17,7 +17,7 @@ public class Airline {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
 
     @Column(nullable = false, unique = true)
-    private long id;
+    private Long id;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false, length = 2, unique = true)
@@ -30,6 +30,7 @@ public class Airline {
         flights.add(flight);
         flight.setAirline(this);
     }
+
 
 
 

@@ -22,10 +22,11 @@ public class BookItem {
     private BigDecimal price;
     @Column(nullable = false)
     private Integer segmentOrder;
-    @Column(nullable = false)
-    @JoinColumn(name = "booking_id")
+    @ManyToOne
+    @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
 
 

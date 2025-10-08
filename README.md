@@ -1,1 +1,1 @@
-Ir a la rama servicio-layer para la revisión de la actividad #3
+Actividad #2 Dtos y Mappers. 

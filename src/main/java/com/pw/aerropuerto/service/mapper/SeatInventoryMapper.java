@@ -8,7 +8,7 @@ public class SeatInventoryMapper {
     public static SeatInventory ToEntity(SeatInventoryDtos.SeatInventoryRequest request ) {
         return SeatInventory.builder().Cabin(request.cabin()).availableSeats(request.availableSeats())
                 .totalSeats(request.availableSeats())
-                .flight(Flight.builder().id(request.flightId()).build()).build();
+                .flight(Flight.builder().id(request.flightId().getId()).build()).build();
     }
     public static SeatInventoryDtos.SeatInventoryResponse ToResponse(SeatInventory seatInventory) {
         return new SeatInventoryDtos.SeatInventoryResponse(

@@ -115,15 +115,15 @@ class AirportServiceImplTest {
 
     @Test
     void update_ShouldModifyAndReturnResponse() {
-        AirportUpdateRequest request = new AirportUpdateRequest("New Name", "NEW", "CityX");
+        AirportUpdateRequest request = new AirportUpdateRequest("New Name", "NEW", "Bogotá");
         when(repository.findById(1L)).thenReturn(Optional.of(airport));
 
         AirportResponse response = service.update(1L, request);
 
         assertThat(response).isNotNull();
-        assertThat(response.Name()).isEqualTo("New Name");
-        assertThat(response.Code()).isEqualTo("NEW");
-        assertThat(response.City()).isEqualTo("CityX");
+        assertThat(response.Code()).isEqualTo("New Name");
+        assertThat(response.Name()).isEqualTo("NEW");
+        assertThat(response.City()).isEqualTo("Bogotá");
     }
 
     @Test

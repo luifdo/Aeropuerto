@@ -24,6 +24,7 @@ public class BookItemMapper {
     public static BookItemDtos.BookItemResponse ToResponse(BookItem bookItem) {
         return new BookItemDtos.BookItemResponse(
                 bookItem.getId(),
+                bookItem.getCabin() != null ? bookItem.getCabin().toString(): null,
                 bookItem.getBooking() != null ? bookItem.getBooking().getId() : null,
                 bookItem.getPrice(),
                 bookItem.getSegmentOrder(),

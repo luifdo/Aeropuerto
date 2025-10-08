@@ -38,12 +38,15 @@ class BookingItemServiceImplTest {
 
     @Test
     void crear_debe_guardar_y_devolver_response() {
+
         // Mock del DTO (si son record, mockear sus métodos)
         BookItemCreateRequest req = mock(BookItemCreateRequest.class);
         when(req.cabinType()).thenReturn("ECONOMY");
         when(req.price()).thenReturn(BigDecimal.valueOf(150.0));
         when(req.bookingId()).thenReturn(1L);
         when(req.flightId()).thenReturn(10L);
+
+
 
 
         // Entidad que el repo "devuelve" tras save
@@ -63,7 +66,7 @@ class BookingItemServiceImplTest {
         assertThat(resp).isNotNull();
         assertThat(resp.id()).isEqualTo(100L);
         assertThat(resp.cabinType()).isEqualTo("ECONOMY");
-        assertThat(resp.price()).isEqualTo(150.0);
+        assertThat(resp.price()).isEqualByComparingTo(BigDecimal.valueOf(150.0));
 
         // Verificar que se llamó repository.save con una BookItem (mapper produce la entidad)
         verify(repository, times(1)).save(any(BookItem.class));
@@ -86,7 +89,7 @@ class BookingItemServiceImplTest {
         assertThat(resp).isNotNull();
         assertThat(resp.id()).isEqualTo(5L);
         assertThat(resp.cabinType()).isEqualTo("BUSINESS");
-        assertThat(resp.price()).isEqualTo(300.0);
+        assertThat(resp.price()).isEqualByComparingTo(BigDecimal.valueOf(300.0));
     }
 
     @Test
@@ -151,7 +154,7 @@ class BookingItemServiceImplTest {
         assertThat(resp).isNotNull();
         assertThat(resp.id()).isEqualTo(id);
         assertThat(resp.cabinType()).isEqualTo("BUSINESS");
-        assertThat(resp.price()).isEqualTo(400.0);
+        assertThat(resp.price()).isEqualByComparingTo(BigDecimal.valueOf(400.0));
 
         // verify repository.findById and save called
         verify(repository).findById(id);
@@ -159,7 +162,7 @@ class BookingItemServiceImplTest {
         verify(repository).save(captor.capture());
         BookItem savedArg = captor.getValue();
         assertThat(savedArg.getCabin()).isEqualTo(Cabin.BUSINESS);
-        assertThat(savedArg.getPrice()).isEqualTo(400.0);
+        assertThat(savedArg.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(400.0));
         assertThat(savedArg.getSegmentOrder()).isEqualTo(2);
     }
 
@@ -169,10 +172,6 @@ class BookingItemServiceImplTest {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         BookItemUpdateRequest req = mock(BookItemUpdateRequest.class);
-        when(req.cabinType()).thenReturn(null);
-        when(req.price()).thenReturn(null);
-        when(req.segmentOrder()).thenReturn(null);
-
         assertThatThrownBy(() -> service.update(id, req))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("BookItem not found");

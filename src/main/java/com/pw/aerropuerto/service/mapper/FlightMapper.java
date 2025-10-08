@@ -32,7 +32,7 @@ public class FlightMapper {
     }
 
     public static void path(Flight entity, FlightDtos.FlightUpdateRequest request ) {
-        if (request.name() != null ) entity.setNumber(request.name());
+        if (request.number() != null ) entity.setNumber(request.number());
         if (request.departureTime() != null ) entity.setDepartureTime(request.departureTime());
         if (request.arrivalTime() != null ) entity.setArrivalTime(request.arrivalTime());
     }

@@ -21,6 +21,6 @@ public class BookingMapper {
     public static void patch(Booking entity, BookingDtos.BookingUpdateRequest request, Passenger passenger, List<BookItem> items) {
         if (request.updatedAt() != null) entity.setCreatedAt(request.updatedAt());
         if (request.passengerId() != null) entity.setPassenger(passenger);
-        if (request.BookItemId() != null && items != null && !items.isEmpty()) entity.setItems(items);
+        if (request.bookItemIds() != null && items != null && !items.isEmpty()) entity.setItems(items);
     }
 }

@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,12 +33,14 @@ class BookingServicelmplTest {
 
     @Test
     void create_debe_guardar_y_devolver_response() {
+        Booking booking = mock(Booking.class);
         BookingCreateRequest req = mock(BookingCreateRequest.class);
         Passenger passenger = new Passenger(); // si no tiene required fields, ok
         List<BookItem> items = List.of();
 
         Booking saved = Booking.builder()
                 .id(11L)
+                .items(new ArrayList<>())
                 // setea sólo lo mínimo necesario para las assertions; usa los campos que tu mapper/toResponse expone
                 .build();
 

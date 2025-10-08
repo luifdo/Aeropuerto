@@ -32,10 +32,9 @@ public class PassengerMapper {
             if (p == null){
                 p = new PassengerProfile();
                 entity.setProfile(p);
-
+            }
             if(request.profile().phone() != null) p.setPhone(request.profile().phone());
             if(request.profile().countryCode() != null) p.setCountryCode(request.profile().countryCode());
-            }
 
         }
     }

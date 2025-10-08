@@ -15,6 +15,7 @@ import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +34,21 @@ class FlightServicelmplTest {
     @Test
     void create_debe_guardar_y_devolver_response() {
         FlightCreateRequest req = mock(FlightCreateRequest.class);
+        ZoneOffset offset = ZoneOffset.ofHours(-5);
+
+        OffsetDateTime departure = OffsetDateTime.of(LocalDateTime.of(2025, 10, 1, 8, 0), offset);
+        OffsetDateTime arrival = OffsetDateTime.of(LocalDateTime.of(2025, 10, 1, 12, 0), offset);
+
         when(req.number()).thenReturn("FL-100");
-        when(req.departureTime()).thenReturn(OffsetDateTime.from(LocalDateTime.of(2025, 10, 1, 8, 0)));
-        when(req.arrivalTime()).thenReturn(OffsetDateTime.from(LocalDateTime.of(2025, 10, 1, 12, 0)));
+        lenient().when(req.departureTime()).thenReturn(departure); // esto como tal no es necesario pero no entiendo pq
+        lenient().when(req.arrivalTime()).thenReturn(arrival);
+
 
         Flight saved = Flight.builder()
                 .id(99L)
                 .number("FL-100")
-                .departureTime(OffsetDateTime.from(LocalDateTime.of(2025, 10, 1, 8, 0)))
-                .arrivalTime(OffsetDateTime.from(LocalDateTime.of(2025, 10, 1, 12, 0)))
+                .departureTime(departure)
+                .arrivalTime(arrival)
                 .build();
 
         when(flightRepository.save(any(Flight.class))).thenReturn(saved);
@@ -51,19 +58,25 @@ class FlightServicelmplTest {
         assertThat(resp).isNotNull();
         assertThat(resp.id()).isEqualTo(99L);
         assertThat(resp.number()).isEqualTo("FL-100");
-        assertThat(resp.departureTime()).isEqualTo(LocalDateTime.of(2025, 10, 1, 8, 0));
-        assertThat(resp.arrivalTime()).isEqualTo(LocalDateTime.of(2025, 10, 1, 12, 0));
+        assertThat(resp.departureTime()).isEqualTo(departure);
+        assertThat(resp.arrivalTime()).isEqualTo(arrival);
+
 
         verify(flightRepository, times(1)).save(any(Flight.class));
     }
 
     @Test
     void get_debe_devolver_response_si_existe() {
+        ZoneOffset offset = ZoneOffset.ofHours(-5);
+
+        OffsetDateTime departure = OffsetDateTime.of(LocalDateTime.of(2025, 11, 1, 9, 0), offset);
+        OffsetDateTime arrival = OffsetDateTime.of(LocalDateTime.of(2025, 11, 1, 13, 0), offset);
+
         Flight f = Flight.builder()
                 .id(5L)
                 .number("FL-5")
-                .departureTime(OffsetDateTime.from(LocalDateTime.of(2025, 11, 1, 9, 0)))
-                .arrivalTime(OffsetDateTime.from(LocalDateTime.of(2025, 11, 1, 13, 0)))
+                .departureTime(departure)
+                .arrivalTime(arrival)
                 .build();
 
         when(flightRepository.findById(5L)).thenReturn(Optional.of(f));
@@ -78,6 +91,8 @@ class FlightServicelmplTest {
     @Test
     void get_debe_lanzar_NotFoundException_si_no_existe() {
         when(flightRepository.findById(123L)).thenReturn(Optional.empty());
+        // en el anterior de booking tenias las vainas de asegurarse que mande null y aca no descarado
+        // o sea este si lo hiciste bien
 
         assertThatThrownBy(() -> service.get(123L))
                 .isInstanceOf(NotFoundException.class)
@@ -104,25 +119,33 @@ class FlightServicelmplTest {
     @Test
     void update_debe_modificar_campos_y_guardar_si_existe() {
         Long id = 20L;
+        ZoneOffset offset = ZoneOffset.ofHours(-5);
+
+        OffsetDateTime departureOld = OffsetDateTime.of(LocalDateTime.of(2025, 12, 1, 6, 0), offset);
+        OffsetDateTime arrivalOld = OffsetDateTime.of(LocalDateTime.of(2025, 12, 1, 10, 0), offset);
+
         Flight existing = Flight.builder()
                 .id(id)
                 .number("OLD-100")
-                .departureTime(OffsetDateTime.from(LocalDateTime.of(2025, 12, 1, 6, 0)))
-                .arrivalTime(OffsetDateTime.from(LocalDateTime.of(2025, 12, 1, 10, 0)))
+                .departureTime(departureOld)
+                .arrivalTime(arrivalOld)
                 .build();
 
         when(flightRepository.findById(id)).thenReturn(Optional.of(existing));
 
+        OffsetDateTime departureNew = OffsetDateTime.of(LocalDateTime.of(2025, 12, 2, 7, 0), offset);
+        OffsetDateTime arrivalNew = OffsetDateTime.of(LocalDateTime.of(2025, 12, 2, 11, 0), offset);
+
         FlightUpdateRequest req = mock(FlightUpdateRequest.class);
         when(req.number()).thenReturn("NEW-200");
-        when(req.departureTime()).thenReturn(OffsetDateTime.from(LocalDateTime.of(2025, 12, 2, 7, 0)));
-        when(req.arrivalTime()).thenReturn(OffsetDateTime.from(LocalDateTime.of(2025, 12, 2, 11, 0)));
+        when(req.departureTime()).thenReturn(departureNew);
+        when(req.arrivalTime()).thenReturn(arrivalNew);
 
         Flight updatedEntity = Flight.builder()
                 .id(id)
                 .number("NEW-200")
-                .departureTime(OffsetDateTime.from(LocalDateTime.of(2025, 12, 2, 7, 0)))
-                .arrivalTime(OffsetDateTime.from(LocalDateTime.of(2025, 12, 2, 11, 0)))
+                .departureTime(departureNew)
+                .arrivalTime(arrivalNew)
                 .build();
 
         when(flightRepository.save(any(Flight.class))).thenReturn(updatedEntity);
@@ -132,16 +155,16 @@ class FlightServicelmplTest {
         assertThat(resp).isNotNull();
         assertThat(resp.id()).isEqualTo(id);
         assertThat(resp.number()).isEqualTo("NEW-200");
-        assertThat(resp.departureTime()).isEqualTo(LocalDateTime.of(2025, 12, 2, 7, 0));
-        assertThat(resp.arrivalTime()).isEqualTo(LocalDateTime.of(2025, 12, 2, 11, 0));
+        assertThat(resp.departureTime()).isEqualTo(OffsetDateTime.of(2025, 12, 2, 7, 0,0,0,offset));
+        assertThat(resp.arrivalTime()).isEqualTo(OffsetDateTime.of(2025, 12, 2, 11, 0,0,0,offset));
 
         verify(flightRepository).findById(id);
         ArgumentCaptor<Flight> captor = ArgumentCaptor.forClass(Flight.class);
         verify(flightRepository).save(captor.capture());
         Flight savedArg = captor.getValue();
         assertThat(savedArg.getNumber()).isEqualTo("NEW-200");
-        assertThat(savedArg.getDepartureTime()).isEqualTo(LocalDateTime.of(2025, 12, 2, 7, 0));
-        assertThat(savedArg.getArrivalTime()).isEqualTo(LocalDateTime.of(2025, 12, 2, 11, 0));
+        assertThat(savedArg.getDepartureTime()).isEqualTo(OffsetDateTime.of(2025, 12, 2, 7, 0, 0, 0, offset));
+        assertThat(savedArg.getArrivalTime()).isEqualTo(OffsetDateTime.of(2025, 12, 2, 11, 0, 0, 0,offset));
     }
 
     @Test
@@ -150,9 +173,9 @@ class FlightServicelmplTest {
         when(flightRepository.findById(id)).thenReturn(Optional.empty());
 
         FlightUpdateRequest req = mock(FlightUpdateRequest.class);
-        when(req.number()).thenReturn(null);
-        when(req.departureTime()).thenReturn(null);
-        when(req.arrivalTime()).thenReturn(null);
+//        when(req.number()).thenReturn(null); otra vez  arriba lo hiciste bien y aca mal mas raro...
+//        when(req.departureTime()).thenReturn(null);
+//        when(req.arrivalTime()).thenReturn(null);
 
         assertThatThrownBy(() -> service.update(id, req))
                 .isInstanceOf(NotFoundException.class)

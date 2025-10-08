@@ -25,6 +25,15 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BookingServicelmplTest {
 
+    /*
+        mano, casi todos los errores de aca es que construyes mal el booking
+
+         Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        Booking booking = Booking.builder().id(5L)
+                .passenger(passenger).items(new ArrayList<>()).build();
+           tu no ponias ni el passenger ni el item tonces estas es mandando todo eso como null y se revienta
+     */
     @Mock
     private BookingRepository bookingRepository;
 
@@ -36,10 +45,14 @@ class BookingServicelmplTest {
         Booking booking = mock(Booking.class);
         BookingCreateRequest req = mock(BookingCreateRequest.class);
         Passenger passenger = new Passenger(); // si no tiene required fields, ok
+        passenger.setId(1L); // compa aca esta linea no existia y mandabas un passenger null, tonces peta
         List<BookItem> items = List.of();
+
+
 
         Booking saved = Booking.builder()
                 .id(11L)
+                .passenger(passenger) // aca agregue esta y la que esta abajo
                 .items(new ArrayList<>())
                 // setea sólo lo mínimo necesario para las assertions; usa los campos que tu mapper/toResponse expone
                 .build();
@@ -57,7 +70,10 @@ class BookingServicelmplTest {
 
     @Test
     void get_debe_devolver_response_si_existe() {
-        Booking booking = Booking.builder().id(5L).build();
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        Booking booking = Booking.builder().id(5L)
+                .passenger(passenger).items(new ArrayList<>()).build();
 
         when(bookingRepository.findById(5L)).thenReturn(Optional.of(booking));
 
@@ -78,8 +94,10 @@ class BookingServicelmplTest {
 
     @Test
     void list_debe_devolver_pagina_de_responses() {
-        Booking a = Booking.builder().id(1L).build();
-        Booking b = Booking.builder().id(2L).build();
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        Booking a = Booking.builder().id(1L).passenger(passenger).items(new ArrayList<>()).build();
+        Booking b = Booking.builder().id(2L).passenger(passenger).items(new ArrayList<>()).build();
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
         Page<Booking> page = new PageImpl<>(List.of(a, b), pageable, 2);
@@ -96,8 +114,12 @@ class BookingServicelmplTest {
     @Test
     void update_debe_guardar_aun_si_request_no_modifica_campos() {
         Long id = 20L;
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
         Booking existing = Booking.builder()
                 .id(id)
+                .passenger(passenger)
+                .items(new ArrayList<>())
                 .build();
 
         when(bookingRepository.findById(id)).thenReturn(Optional.of(existing));
@@ -108,7 +130,7 @@ class BookingServicelmplTest {
         when(req.passengerId()).thenReturn(null);
         when(req.bookItemIds()).thenReturn(null);
 
-        Booking afterSave = Booking.builder().id(id).build();
+        Booking afterSave = Booking.builder().id(id).passenger(passenger).items(new ArrayList<>()).build();
         when(bookingRepository.save(any(Booking.class))).thenReturn(afterSave);
 
         var resp = service.update(id, req);
@@ -129,9 +151,9 @@ class BookingServicelmplTest {
         when(bookingRepository.findById(id)).thenReturn(Optional.empty());
 
         BookingUpdateRequest req = mock(BookingUpdateRequest.class);
-        when(req.updatedAt()).thenReturn(null);
-        when(req.passengerId()).thenReturn(null);
-        when(req.bookItemIds()).thenReturn(null);
+//        when(req.updatedAt()).thenReturn(null);  todo esto es mala practica
+//        when(req.passengerId()).thenReturn(null); apenas ve que no existe el id eso te dice que no funciona
+//        when(req.bookItemIds()).thenReturn(null);
 
         assertThatThrownBy(() -> service.update(id, req))
                 .isInstanceOf(NotFoundException.class)

@@ -1,15 +1,12 @@
 package com.pw.aerropuerto.service;
 
-import com.pw.aerropuerto.api.dto.PassangerDtos.PassengerCreateRequest;
-import com.pw.aerropuerto.api.dto.PassangerDtos.PassengerUpdateRequest;
-import com.pw.aerropuerto.api.dto.PassangerDtos.PassengerResponse;
+import com.pw.aerropuerto.api.dto.PassangerDtos.*;
 import com.pw.aerropuerto.dominio.entities.Passenger;
 import com.pw.aerropuerto.dominio.repositories.PassengerRepository;
 import com.pw.aerropuerto.exception.NotFoundException;
 import com.pw.aerropuerto.service.mapper.PassengerMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -33,25 +30,27 @@ class PassengerServiceImplTest {
 
     @Test
     void create_debe_guardar_y_devolver_response() {
-        PassengerCreateRequest req = mock(PassengerCreateRequest.class);
+        PassengerCreateRequest req = new PassengerCreateRequest("Luis", "test@example.com", null);
 
         Passenger saved = Passenger.builder()
-                .Id(101L)
+                .id(101L)
                 .email("test@example.com")
                 .build();
 
         // stub repository.save
         when(repository.save(any(Passenger.class))).thenReturn(saved);
 
-        // mock static mapper toResponse
-        PassengerResponse respMock = mock(PassengerResponse.class);
-        when(respMock.Id()).thenReturn(101L);
-        when(respMock.email()).thenReturn("test@example.com");
-
         try (MockedStatic<PassengerMapper> mocked = mockStatic(PassengerMapper.class)) {
-            // When toResponse is called with any Passenger, return our mock response
-            mocked.when(() -> PassengerMapper.toResponse(any(Passenger.class))).thenReturn(respMock);
+            Passenger entity = Passenger.builder().id(1L).name("Luis").email("test@example.com").build();
 
+            mocked.when(() -> PassengerMapper.ToEntity(any(PassengerCreateRequest.class)))
+                    .thenReturn(entity);
+
+            mocked.when(() -> PassengerMapper.toResponse(any(Passenger.class)))
+                    .thenAnswer(invocation -> {
+                        Passenger p = invocation.getArgument(0);
+                        return new PassengerResponse(p.getId(), p.getName(), p.getEmail(), null);
+                    });
             var resp = service.create(req);
 
             assertThat(resp).isNotNull();
@@ -60,12 +59,14 @@ class PassengerServiceImplTest {
 
             verify(repository, times(1)).save(any(Passenger.class));
             mocked.verify(() -> PassengerMapper.toResponse(any(Passenger.class)), times(1));
+
+
         }
     }
 
     @Test
     void get_debe_devolver_response_si_existe() {
-        Passenger p = Passenger.builder().Id(5L).email("a@b.com").build();
+        Passenger p = Passenger.builder().id(5L).email("a@b.com").build();
         when(repository.findById(5L)).thenReturn(Optional.of(p));
 
         PassengerResponse respMock = mock(PassengerResponse.class);
@@ -97,7 +98,7 @@ class PassengerServiceImplTest {
     @Test
     void getByEmail_debe_devolver_response_si_existe() {
         String email = "mi@correo.com";
-        Passenger p = Passenger.builder().Id(7L).email(email).build();
+        Passenger p = Passenger.builder().id(7L).email(email).build();
         when(repository.findByEmailIgnoreCaseQuery(email)).thenReturn(Optional.of(p));
 
         PassengerResponse respMock = mock(PassengerResponse.class);
@@ -129,8 +130,8 @@ class PassengerServiceImplTest {
 
     @Test
     void lis_debe_devolver_pagina_de_responses() {
-        Passenger a = Passenger.builder().Id(1L).email("a@a.com").build();
-        Passenger b = Passenger.builder().Id(2L).email("b@b.com").build();
+        Passenger a = Passenger.builder().id(1L).email("a@a.com").build();
+        Passenger b = Passenger.builder().id(2L).email("b@b.com").build();
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
         Page<Passenger> page = new PageImpl<>(List.of(a, b), pageable, 2);
@@ -158,7 +159,7 @@ class PassengerServiceImplTest {
     @Test
     void update_debe_aplicar_path_y_devolver_response_si_existe() {
         Long id = 50L;
-        Passenger existing = Passenger.builder().Id(id).email("old@x.com").build();
+        Passenger existing = Passenger.builder().id(id).email("old@x.com").build();
         when(repository.findById(id)).thenReturn(Optional.of(existing));
 
         PassengerUpdateRequest req = mock(PassengerUpdateRequest.class);

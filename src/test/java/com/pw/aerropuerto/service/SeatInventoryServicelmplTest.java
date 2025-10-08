@@ -3,6 +3,7 @@ package com.pw.aerropuerto.service;
 import com.pw.aerropuerto.api.dto.SeatInventoryDtos.SeatInventoryRequest;
 import com.pw.aerropuerto.api.dto.SeatInventoryDtos.SeatInventoryResponse;
 import com.pw.aerropuerto.dominio.entities.Cabin;
+import com.pw.aerropuerto.dominio.entities.Flight;
 import com.pw.aerropuerto.dominio.entities.SeatInventory;
 import com.pw.aerropuerto.dominio.repositories.SeatInventoryRepository;
 import com.pw.aerropuerto.exception.NotFoundException;
@@ -31,8 +32,16 @@ class SeatInventoryServicelmplTest {
 
     @Test
     void create_debe_guardar_y_devolver_response() {
-        SeatInventoryRequest req = mock(SeatInventoryRequest.class);
-        SeatInventory saved = SeatInventory.builder().id(1L).build();
+
+        Flight flight = Flight.builder().id(100l).build();
+        SeatInventoryRequest req = new SeatInventoryRequest(Cabin.ECONOMY,20,flight);
+        SeatInventory saved = SeatInventory.builder()
+                .id(1L)
+                .Cabin(Cabin.ECONOMY)
+                .availableSeats(20)
+                .totalSeats(20)
+                .flight(flight)
+                .build();
 
         when(repository.save(any(SeatInventory.class))).thenReturn(saved);
 
@@ -45,7 +54,15 @@ class SeatInventoryServicelmplTest {
 
     @Test
     void get_debe_devolver_response_si_existe() {
-        SeatInventory seat = SeatInventory.builder().id(5L).build();
+        SeatInventory seat = SeatInventory.builder()
+                .id(5L)
+                .Cabin(Cabin.ECONOMY)
+                .availableSeats(20)
+                .totalSeats(20)
+                .flight(Flight.builder().id(100l).build())
+                .build();
+        // aca no servia pq no le estas mandando todo del searInventory es decir no ponias ni la cabina ni los asientos ni el vuelo
+        // tienes muchos errores asi
         when(repository.findById(5L)).thenReturn(Optional.of(seat));
 
         SeatInventoryResponse resp = service.get(5L);
@@ -65,8 +82,19 @@ class SeatInventoryServicelmplTest {
 
     @Test
     void list_debe_devolver_pagina_de_responses() {
-        SeatInventory a = SeatInventory.builder().id(1L).build();
-        SeatInventory b = SeatInventory.builder().id(2L).build();
+        SeatInventory a = SeatInventory.builder()
+                .id(1L)
+                .Cabin(Cabin.ECONOMY)
+                .availableSeats(20)
+                .totalSeats(20)
+                .flight(Flight.builder().id(100l).build())
+                .build();
+        SeatInventory b = SeatInventory.builder()
+                .id(1L).Cabin(Cabin.ECONOMY)
+                .availableSeats(20)
+                .totalSeats(20)
+                .flight(Flight.builder().id(100l).build())
+                .build();
 
         Pageable pageable = PageRequest.of(0, 10);
         Page<SeatInventory> page = new PageImpl<>(List.of(a, b), pageable, 2);
@@ -83,7 +111,13 @@ class SeatInventoryServicelmplTest {
     @Test
     void update_debe_guardar_cuando_existe() {
         Long id = 10L;
-        SeatInventory existing = SeatInventory.builder().id(id).Cabin(Cabin.ECONOMY).availableSeats(100).build();
+        SeatInventory existing = SeatInventory.builder()
+                .id(id)
+                .Cabin(Cabin.ECONOMY)
+                .availableSeats(100)
+                .totalSeats(100)
+                .flight(Flight.builder().id(100l).build())
+                .build();
         when(repository.findById(id)).thenReturn(Optional.of(existing));
 
         SeatInventoryRequest req = mock(SeatInventoryRequest.class);
@@ -91,7 +125,13 @@ class SeatInventoryServicelmplTest {
         when(req.availableSeats()).thenReturn(50);
         when(req.flightId()).thenReturn(null);
 
-        SeatInventory updated = SeatInventory.builder().id(id).Cabin(Cabin.BUSINESS).availableSeats(50).build();
+        SeatInventory updated = SeatInventory.builder()
+                .id(id)
+                .Cabin(Cabin.BUSINESS)
+                .availableSeats(50)
+                .totalSeats(50)
+                .flight(Flight.builder().id(100l).build())
+                .build();
         when(repository.save(any(SeatInventory.class))).thenReturn(updated);
 
         SeatInventoryResponse resp = service.update(id, req);
@@ -102,7 +142,7 @@ class SeatInventoryServicelmplTest {
 
         ArgumentCaptor<SeatInventory> captor = ArgumentCaptor.forClass(SeatInventory.class);
         verify(repository).save(captor.capture());
-        assertThat(captor.getValue().getCabin()).isEqualTo("BUSINESS");
+        assertThat(captor.getValue().getCabin()).isEqualByComparingTo(Cabin.BUSINESS);
         assertThat(captor.getValue().getAvailableSeats()).isEqualTo(50);
     }
 

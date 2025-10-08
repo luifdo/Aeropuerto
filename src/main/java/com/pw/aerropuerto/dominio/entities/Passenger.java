@@ -15,7 +15,7 @@ import java.util.Set;
 @Builder
 public class Passenger {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+    private Long id;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)

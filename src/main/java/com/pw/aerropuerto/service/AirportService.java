@@ -1,6 +1,8 @@
 package com.pw.aerropuerto.service;
 
 import com.pw.aerropuerto.api.dto.AirportDtos.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -11,5 +13,6 @@ public interface AirportService {
     List<AirportResponse> list();
     List<AirportResponse> list(String code);
     AirportResponse update(Long id,AirportUpdateRequest request);
+    Page<AirportResponse> list(Pageable pageable);
     void delete(Long id);
 }

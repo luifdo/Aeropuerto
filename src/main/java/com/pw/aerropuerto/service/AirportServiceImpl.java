@@ -6,6 +6,8 @@ import com.pw.aerropuerto.dominio.repositories.AirportRepository;
 import com.pw.aerropuerto.exception.NotFoundException;
 import com.pw.aerropuerto.service.mapper.AirportMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,11 @@ public class AirportServiceImpl implements AirportService {
         AirportMapper.path(u, request);
 
         return AirportMapper.ToResponse(u);
+    }
+
+    @Override
+    public Page<AirportDtos.AirportResponse> list(Pageable pageable) {
+        return repository.findAll(pageable).map(AirportMapper::ToResponse);
     }
 
     @Override

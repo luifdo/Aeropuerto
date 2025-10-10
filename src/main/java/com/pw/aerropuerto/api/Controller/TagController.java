@@ -1,4 +1,4 @@
-package com.pw.aerropuerto.api;
+package com.pw.aerropuerto.api.Controller;
 
 import com.pw.aerropuerto.api.dto.TagDtos.*;
 import com.pw.aerropuerto.service.TagService;

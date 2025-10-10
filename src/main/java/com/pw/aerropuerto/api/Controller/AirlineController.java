@@ -1,7 +1,6 @@
-package com.pw.aerropuerto.api;
+package com.pw.aerropuerto.api.Controller;
 
 import com.pw.aerropuerto.api.dto.AirlineDtos.*;
-import com.pw.aerropuerto.dominio.entities.Airline;
 import com.pw.aerropuerto.service.AirlineService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

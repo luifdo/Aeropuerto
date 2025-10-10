@@ -1,4 +1,4 @@
-package com.pw.aerropuerto.api;
+package com.pw.aerropuerto.api.Controller;
 
 import com.pw.aerropuerto.api.dto.BookingDtos.*;
 import com.pw.aerropuerto.dominio.entities.BookItem;

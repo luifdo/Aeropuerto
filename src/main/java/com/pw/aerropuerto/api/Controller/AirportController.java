@@ -1,4 +1,4 @@
-package com.pw.aerropuerto.api;
+package com.pw.aerropuerto.api.Controller;
 import com.pw.aerropuerto.api.dto.AirportDtos.*;
 import com.pw.aerropuerto.service.AirportService;
 import jakarta.validation.Valid;

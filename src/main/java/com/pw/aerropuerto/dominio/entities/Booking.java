@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "booking")
+@Table(name = "bookings")
 @Getter
 @Setter
 @NoArgsConstructor

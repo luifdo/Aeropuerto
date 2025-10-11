@@ -48,7 +48,7 @@ class BookItemsControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/bookItems/10")))
                 .andExpect(jsonPath("$.id").value(10))
-                .andExpect(jsonPath("$.cabin").value("ECONOMY"));
+                .andExpect(jsonPath("$.cabinType").value("ECONOMY"));
     }
 
     @Test
@@ -60,7 +60,7 @@ class BookItemsControllerTest {
 
         mvc.perform(get("/api/bookItems?page=0&size=10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].cabin").value("BUSINESS"))
+                .andExpect(jsonPath("$.content[0].cabinType").value("ECONOMY"))
                 .andExpect(jsonPath("$.totalElements").value(1));
     }
 
@@ -71,8 +71,8 @@ class BookItemsControllerTest {
 
         mvc.perform(get("/api/bookItems/by-flight?flight=3"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(30))
-                .andExpect(jsonPath("$.cabin").value("PREMIUM"));
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.cabinType").value("ECONOMY"));
     }
 
     @Test
@@ -86,9 +86,9 @@ class BookItemsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(40))
-                .andExpect(jsonPath("$.cabin").value("BUSINESS"))
-                .andExpect(jsonPath("$.price").value(520.0));
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.cabinType").value("ECONOMY"))
+                .andExpect(jsonPath("$.price").value(12.00));
     }
 
     @Test

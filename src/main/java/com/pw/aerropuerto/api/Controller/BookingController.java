@@ -3,7 +3,9 @@ package com.pw.aerropuerto.api.Controller;
 import com.pw.aerropuerto.api.dto.BookingDtos.*;
 import com.pw.aerropuerto.dominio.entities.BookItem;
 import com.pw.aerropuerto.dominio.entities.Passenger;
+import com.pw.aerropuerto.dominio.repositories.PassengerRepository;
 import com.pw.aerropuerto.service.BookingService;
+import com.pw.aerropuerto.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,15 +24,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class BookingController {
-    private BookingService service;
-    private Passenger  passenger;
-    private List<BookItem> bookItems;
+    private  final BookingService service;
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingCreateRequest request,
                                                               UriComponentsBuilder uriComponentsBuilder) {
 
+        Passenger passenger = new Passenger();
+        passenger.setId(request.passengerId());
+
+        List<BookItem> bookItems = new ArrayList<>();
+
         var body = service.create(request,passenger, bookItems);
-        var location = uriComponentsBuilder.path("/api/bookings").buildAndExpand(body.id()).toUri();
+        var location = uriComponentsBuilder.path("/api/bookings/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
     }
 

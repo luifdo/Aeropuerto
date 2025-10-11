@@ -22,7 +22,7 @@ public class AirlineController {
     public ResponseEntity<AirlineResponse> addAirline(@Valid @RequestBody AirlineCreateRequest request,
                                               UriComponentsBuilder uriComponentsBuilder) {
         var body = airlineService.create(request);
-        var location = uriComponentsBuilder.path("/api/airlines").buildAndExpand(body.id()).toUri();
+        var location = uriComponentsBuilder.path("/api/airlines/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
     }
 

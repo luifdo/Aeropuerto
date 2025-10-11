@@ -19,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Validated
 public class BookItemsController {
     private final BookingItemService service;
-    private  Flight flight;
     @PostMapping
     public ResponseEntity<BookItemResponse> create (@Valid@RequestBody BookItemCreateRequest req,
                                                     UriComponentsBuilder uriComponentsBuilder){
@@ -28,7 +27,7 @@ public class BookItemsController {
         return ResponseEntity.created(location).body(body);
     }
     @GetMapping
-    private ResponseEntity<Page<BookItemResponse>> list( @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<BookItemResponse>> list( @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size){
         var result = service.list(PageRequest.of(page, size, Sort.by("id").ascending()));
         return ResponseEntity.ok(result);

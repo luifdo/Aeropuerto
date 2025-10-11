@@ -16,23 +16,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @Validated
 public class AirportController {
-    private AirportService airportService;
+    private  final AirportService airportService;
 
     @PostMapping
-    public ResponseEntity<AirportResponse> createAirline(@Valid@RequestBody AirportCreateRequest request,
+    public ResponseEntity<AirportResponse> createAirport(@Valid@RequestBody AirportCreateRequest request,
                                                       UriComponentsBuilder uriComponentsBuilder) {
         var body = airportService.create(request);
-        var location = uriComponentsBuilder.path("/api/airlines/{id}").buildAndExpand(body).toUri();
+        var location = uriComponentsBuilder.path("/api/airports/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AirportResponse> getAirline(@PathVariable long id) {
+    public ResponseEntity<AirportResponse> getAirport(@PathVariable long id) {
         return ResponseEntity.ok(airportService.get(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<AirportResponse>> getAllAirlines(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<Page<AirportResponse>> getAllAirport(@RequestParam(defaultValue = "0")int page,
                                                                 @RequestParam(defaultValue = "10")int size) {
         var result = airportService.list(PageRequest.of(page,size, Sort.by("id").ascending()));
         return ResponseEntity.ok(result);
@@ -42,8 +42,7 @@ public class AirportController {
     public ResponseEntity<AirportResponse> getbyCode(@RequestParam String code) {
         return ResponseEntity.ok(airportService.get(code));
     }
-
-    @GetMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<AirportResponse> update(@PathVariable long id,
                                                   @Valid@RequestBody AirportUpdateRequest request) {
         return ResponseEntity.ok(airportService.update(id, request));

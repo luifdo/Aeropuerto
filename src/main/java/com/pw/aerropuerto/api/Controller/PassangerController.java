@@ -17,12 +17,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @Validated
 public class PassangerController {
-    private PassengerService passengerService;
+    private  final PassengerService passengerService;
 
     @PostMapping
     public ResponseEntity<PassengerResponse> createPassenger(@Valid@RequestBody PassengerCreateRequest request, UriComponentsBuilder uriComponentsBuilder) {
         var body = passengerService.create(request);
-        var location = uriComponentsBuilder.path("/api/passengers/{id}").buildAndExpand(body).toUri();
+        var location = uriComponentsBuilder.path("/api/passengers/{id}").buildAndExpand(body.Id()).toUri();
         return ResponseEntity.created(location).body(body);
     }
     @GetMapping("/{id}")

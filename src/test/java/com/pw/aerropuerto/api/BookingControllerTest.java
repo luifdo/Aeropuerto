@@ -35,8 +35,9 @@ class BookingControllerTest {
 
     @Test
     void createBooking_shouldReturn201AndLocation() throws Exception {
-        var req = new BookingCreateRequest(OffsetDateTime.of(2025, 10, 10, 15, 30, 0, 0, ZoneOffset.of("-05:00")), 4L, java.util.List.of());
-        var resp = new BookingResponse(10L, OffsetDateTime.of(2025, 10, 10, 15, 30, 0, 0, ZoneOffset.of("-05:00")) ,java.util.List.of(), 200L);
+        var create = OffsetDateTime.now().plusHours(1);
+        var req = new BookingCreateRequest(create, 4L, java.util.List.of());
+        var resp = new BookingResponse(10L , create ,java.util.List.of(), 4L);
 
         when(service.create(any(), any(), any())).thenReturn(resp);
 
@@ -46,7 +47,7 @@ class BookingControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/bookings/10")))
                 .andExpect(jsonPath("$.id").value(10))
-                .andExpect(jsonPath("$.code").value("RES-001"));
+                .andExpect(jsonPath("$.passengerId").value(4L));
     }
 
     @Test
@@ -58,7 +59,7 @@ class BookingControllerTest {
 
         mvc.perform(get("/api/bookings?page=0&size=10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].code").value("RES-002"))
+                .andExpect(jsonPath("$.content[0].id").value(10))
                 .andExpect(jsonPath("$.totalElements").value(1));
     }
 
@@ -69,8 +70,8 @@ class BookingControllerTest {
 
         mvc.perform(get("/api/bookings/by-passanger?passenger=5"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Carlos Pérez"))
-                .andExpect(jsonPath("$.cabinType").value("PREMIUM"));
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.passengerId").value(200));
     }
 
     @Test
@@ -85,8 +86,8 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("UPDATED-001"))
-                .andExpect(jsonPath("$.cabinType").value("BUSINESS"));
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.passengerId").value(200));
     }
 
     @Test

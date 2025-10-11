@@ -28,7 +28,7 @@ class AirportControllerTest {
     @Autowired
     ObjectMapper om;
     @MockitoBean
-    AirportService airportService;
+     private AirportService airportService;
 
     @Test
     void createAirport_shouldReturn201AndLocation() throws Exception {
@@ -41,9 +41,9 @@ class AirportControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/airlines/1")))
+                .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/airports/1")))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("El Dorado"));
+                .andExpect(jsonPath("$.Name").value("El Dorado"));
     }
 
     @Test
@@ -53,8 +53,8 @@ class AirportControllerTest {
 
         mvc.perform(get("/api/airports/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("MDE"))
-                .andExpect(jsonPath("$.name").value("José María Córdova"));
+                .andExpect(jsonPath("$.Code").value("MDE"))
+                .andExpect(jsonPath("$.Name").value("José María Córdova"));
     }
 
     @Test
@@ -67,7 +67,7 @@ class AirportControllerTest {
         mvc.perform(get("/api/airports?page=0&size=5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
-                .andExpect(jsonPath("$.content[0].code").value("CTG"));
+                .andExpect(jsonPath("$.content[0].Code").value("CTG"));
     }
 
     @Test
@@ -77,8 +77,8 @@ class AirportControllerTest {
 
         mvc.perform(get("/api/airports/by-code?code=PEI"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Matecaña"))
-                .andExpect(jsonPath("$.city").value("Pereira"));
+                .andExpect(jsonPath("$.Name").value("Matecaña"))
+                .andExpect(jsonPath("$.City").value("Pereira"));
     }
 
     @Test
@@ -88,12 +88,12 @@ class AirportControllerTest {
 
         when(airportService.update(eq(5L), any())).thenReturn(resp);
 
-        mvc.perform(get("/api/airports/5") // El controlador usa @GetMapping, debería ser @PatchMapping
+        mvc.perform(patch("/api/airports/5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Ernesto Cortissoz"))
-                .andExpect(jsonPath("$.code").value("BAQ"));
+                .andExpect(jsonPath("$.Name").value("Ernesto Cortissoz"))
+                .andExpect(jsonPath("$.Code").value("BAQ"));
     }
 
     @Test

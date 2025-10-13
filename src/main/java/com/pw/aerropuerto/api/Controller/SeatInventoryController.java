@@ -22,8 +22,11 @@ public class SeatInventoryController {
     @PostMapping
     public ResponseEntity<SeatInventoryResponse> createSeatInventoryRespone(@Valid @RequestBody SeatInventoryRequest request, UriComponentsBuilder uriComponentsBuilder) {
         var body = seatInventoryService.create(request);
-        var location = uriComponentsBuilder.path("/api/SeatInventories/{id}").buildAndExpand(body).toUri();
+        if (body == null || body.id() == null) {
+            return ResponseEntity.internalServerError().build(); // evita NullPointerException
+        }var location = uriComponentsBuilder.path("/api/SeatInventories/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
+
     }
     @GetMapping("/{id}")
     public ResponseEntity<SeatInventoryResponse> getSeatInventoryResponse(@PathVariable long id){
@@ -35,7 +38,7 @@ public class SeatInventoryController {
     var result = seatInventoryService.list(PageRequest.of(page, size, Sort.by("id").ascending()));
     return ResponseEntity.ok(result);
     }
-    @GetMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<SeatInventoryResponse>update(@PathVariable long id,
                                                        @Valid @RequestBody SeatInventoryRequest req) {
         return ResponseEntity.ok(seatInventoryService.update(id, req));

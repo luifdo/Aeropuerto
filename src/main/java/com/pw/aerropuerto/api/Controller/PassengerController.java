@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/api/passengers")
 @RequiredArgsConstructor
 @Validated
-public class PassangerController {
+public class PassengerController {
     private  final PassengerService passengerService;
 
     @PostMapping
@@ -29,9 +29,9 @@ public class PassangerController {
     public ResponseEntity<PassengerResponse> getPassenger(@PathVariable long id) {
         return ResponseEntity.ok(passengerService.get(id));
     }
-    @GetMapping("/{by-Email}")
-    public ResponseEntity<PassengerResponse> getByEmail(@RequestParam String Email) {
-        return ResponseEntity.ok(passengerService.get(Long.valueOf(Email)));
+    @GetMapping("/email/{email}")
+    public ResponseEntity<PassengerResponse> getByEmail(@PathVariable("email") String Email) {
+        return ResponseEntity.ok(passengerService.getByEmail(Email));
     }
 
     @GetMapping
@@ -40,7 +40,7 @@ public class PassangerController {
     var result = passengerService.lis(PageRequest.of(page, size, Sort.by("name").ascending()));
     return ResponseEntity.ok(result);
     }
-    @GetMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<PassengerResponse> update(@PathVariable long id,
                                                     @Valid@RequestBody PassengerUpdateRequest request) {
         return ResponseEntity.ok(passengerService.update(id, request));

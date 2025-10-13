@@ -1,6 +1,6 @@
 package com.pw.aerropuerto.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pw.aerropuerto.api.Controller.PassangerController;
+import com.pw.aerropuerto.api.Controller.PassengerController;
 import com.pw.aerropuerto.api.dto.PassangerDtos.*;
 import com.pw.aerropuerto.service.PassengerService;
 import org.junit.jupiter.api.Test;
@@ -18,9 +18,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(PassangerController.class)
+@WebMvcTest(PassengerController.class)
 class PassengerControllerTest {
 
     @Autowired MockMvc mvc;
@@ -39,7 +40,7 @@ class PassengerControllerTest {
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/passengers/1")))
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.Id").value(1))
                 .andExpect(jsonPath("$.name").value("Ana"));
     }
 
@@ -48,7 +49,7 @@ class PassengerControllerTest {
         var resp = new PassengerResponse(2L, "Luis", "luis@mail.com", new PassengerProfileDto("+57 319 7604110","COL"));
         when(passengerService.get(eq(2L))).thenReturn(resp);
 
-        mvc.perform(get("/api/passengers/2"))
+        mvc.perform(get("/api/passengers/2")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Luis"))
                 .andExpect(jsonPath("$.email").value("luis@mail.com"));
@@ -57,9 +58,9 @@ class PassengerControllerTest {
     @Test
     void getByEmail_shouldReturn200() throws Exception {
         var resp = new PassengerResponse(3L, "Carlos", "carlos@mail.com", new PassengerProfileDto("+57 319 7604110","COL"));
-        when(passengerService.get(anyLong())).thenReturn(resp);
+        when(passengerService.getByEmail("carlos@mail.com")).thenReturn(resp);
 
-        mvc.perform(get("/api/passengers/by-Email?Email=3"))
+        mvc.perform(get("/api/passengers/email/{email}","carlos@mail.com"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Carlos"))
                 .andExpect(jsonPath("$.email").value("carlos@mail.com"));
@@ -85,7 +86,7 @@ class PassengerControllerTest {
 
         when(passengerService.update(eq(5L), any())).thenReturn(resp);
 
-        mvc.perform(get("/api/passengers/5")
+        mvc.perform(put("/api/passengers/5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())

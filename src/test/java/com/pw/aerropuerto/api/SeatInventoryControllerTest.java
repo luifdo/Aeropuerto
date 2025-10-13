@@ -1,9 +1,9 @@
 package com.pw.aerropuerto.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pw.aerropuerto.api.Controller.SeatInventoryController;
+import com.pw.aerropuerto.api.dto.FlightDtos;
 import com.pw.aerropuerto.api.dto.SeatInventoryDtos.*;
-import com.pw.aerropuerto.dominio.entities.Cabin;
-import com.pw.aerropuerto.dominio.entities.Flight;
+import com.pw.aerropuerto.dominio.entities.*;
 import com.pw.aerropuerto.service.SeatInventoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -38,22 +41,26 @@ class SeatInventoryControllerTest {
     @Test
     void createSeatInventory_shouldReturn201AndLocation() throws Exception {
         var cabin = Cabin.valueOf("ECONOMY");
-        var flight = new Flight();
+        var flight = new Flight(15L, "AVLLL",
+                OffsetDateTime.of(2025, 12, 24, 8, 30, 0, 0,
+                ZoneOffset.ofHours(1)), OffsetDateTime.of(2025, 12, 24, 9, 30, 0, 0,ZoneOffset.ofHours(1))
+                ,new Airline(), new Airport(), new Airport(), java.util.Set.of());
         var req = new SeatInventoryRequest(cabin, 4, flight);
-        var resp = new SeatInventoryResponse(1L, cabin, 10, 4, 150L);
+        var resp = new SeatInventoryResponse(1L, cabin, 10, 4, 15L);
 
         when(seatInventoryService.create(any())).thenReturn(resp);
 
         mvc.perform(post("/api/SeatInventories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(req)))
+                        .content(om.writeValueAsString(req))).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/SeatInventories/1")))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.flightId").value(1))
+                .andExpect(jsonPath("$.flightId").value(15))
                 .andExpect(jsonPath("$.cabinType").value("ECONOMY"))
                 .andExpect(jsonPath("$.totalSeats").value(150))
                 .andExpect(jsonPath("$.availableSeats").value(120));
+
     }
 
     @Test
@@ -98,7 +105,7 @@ class SeatInventoryControllerTest {
 
         when(seatInventoryService.update(eq(4L), any())).thenReturn(resp);
 
-        mvc.perform(get("/api/SeatInventories/4")
+        mvc.perform(put("/api/SeatInventories/4")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())

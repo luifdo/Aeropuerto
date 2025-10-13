@@ -51,7 +51,7 @@ class FlightControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/flights/1")))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.code").value("AV101"));
+                .andExpect(jsonPath("$.number").value("AV101"));
     }
 
     @Test
@@ -64,7 +64,7 @@ class FlightControllerTest {
         mvc.perform(get("/api/flights/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.origin").value("LIM"));
+                .andExpect(jsonPath("$.origin").value("Santa Marta"));
     }
 
     @Test
@@ -78,7 +78,7 @@ class FlightControllerTest {
 
         mvc.perform(get("/api/flights?page=0&size=10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].code").value("IB303"))
+                .andExpect(jsonPath("$.content[0].number").value("IB303"))
                 .andExpect(jsonPath("$.totalElements").value(1));
     }
 
@@ -96,7 +96,7 @@ class FlightControllerTest {
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
-                .andExpect(jsonPath("$.destination").value("NYC"));
+                .andExpect(jsonPath("$.destination").value("Bogota"));
     }
 
     @Test

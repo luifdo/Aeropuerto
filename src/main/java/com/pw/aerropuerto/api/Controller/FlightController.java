@@ -22,7 +22,7 @@ public class FlightController {
     @PostMapping
     public ResponseEntity<FlightResponse> createFlight(@Valid@RequestBody FlightCreateRequest request, UriComponentsBuilder uriComponentsBuilder) {
         var body = flightService.create(request);
-        var location = uriComponentsBuilder.path("/api/flights/{id}").buildAndExpand(body).toUri();
+        var location = uriComponentsBuilder.path("/api/flights/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
     }
     @GetMapping("/{id}")

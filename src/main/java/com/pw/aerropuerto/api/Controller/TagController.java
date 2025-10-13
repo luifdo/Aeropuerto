@@ -19,7 +19,7 @@ public class TagController {
     @PostMapping
     public ResponseEntity<TagResponse> createTag(@Valid@RequestBody TagCreateRequest request, UriComponentsBuilder uriComponentsBuilder) {
         var body = tagService.create(request);
-        var location = uriComponentsBuilder.path("/api/Tags/{id}").buildAndExpand(body).toUri();
+        var location = uriComponentsBuilder.path("/api/Tags/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
     }
     @GetMapping("/{id}")

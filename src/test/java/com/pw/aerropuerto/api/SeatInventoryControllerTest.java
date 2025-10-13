@@ -36,7 +36,7 @@ class SeatInventoryControllerTest {
     ObjectMapper om;
 
     @MockitoBean
-    SeatInventoryService seatInventoryService;
+      SeatInventoryService seatInventoryService;
 
     @Test
     void createSeatInventory_shouldReturn201AndLocation() throws Exception {
@@ -45,21 +45,21 @@ class SeatInventoryControllerTest {
                 OffsetDateTime.of(2025, 12, 24, 8, 30, 0, 0,
                 ZoneOffset.ofHours(1)), OffsetDateTime.of(2025, 12, 24, 9, 30, 0, 0,ZoneOffset.ofHours(1))
                 ,new Airline(), new Airport(), new Airport(), java.util.Set.of());
-        var req = new SeatInventoryRequest(cabin, 4, flight);
+        var req = new SeatInventoryRequest(cabin, 4, 15L);
         var resp = new SeatInventoryResponse(1L, cabin, 10, 4, 15L);
 
         when(seatInventoryService.create(any())).thenReturn(resp);
 
-        mvc.perform(post("/api/SeatInventories")
+        mvc.perform(post("/api/SeatInventory")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req))).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/SeatInventories/1")))
+                .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/SeatInventory/1")))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.flightId").value(15))
-                .andExpect(jsonPath("$.cabinType").value("ECONOMY"))
-                .andExpect(jsonPath("$.totalSeats").value(150))
-                .andExpect(jsonPath("$.availableSeats").value(120));
+                .andExpect(jsonPath("$.cabin").value("ECONOMY"))
+                .andExpect(jsonPath("$.totalSeats").value(10))
+                .andExpect(jsonPath("$.availableSeats").value(4));
 
     }
 
@@ -71,13 +71,13 @@ class SeatInventoryControllerTest {
 
         when(seatInventoryService.get(2L)).thenReturn(resp);
 
-        mvc.perform(get("/api/SeatInventories/2"))
+        mvc.perform(get("/api/SeatInventory/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.flightId").value(10))
-                .andExpect(jsonPath("$.cabinType").value("BUSINESS"))
-                .andExpect(jsonPath("$.totalSeats").value(50))
-                .andExpect(jsonPath("$.availableSeats").value(30));
+                .andExpect(jsonPath("$.flightId").value(30))
+                .andExpect(jsonPath("$.cabin").value("ECONOMY"))
+                .andExpect(jsonPath("$.totalSeats").value(60))
+                .andExpect(jsonPath("$.availableSeats").value(50));
     }
 
     @Test
@@ -89,10 +89,10 @@ class SeatInventoryControllerTest {
 
         when(seatInventoryService.list(any(PageRequest.class))).thenReturn(page);
 
-        mvc.perform(get("/api/SeatInventories?page=0&size=10"))
+        mvc.perform(get("/api/SeatInventory?page=0&size=10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].cabinType").value("PREMIUM"))
-                .andExpect(jsonPath("$.content[0].totalSeats").value(40))
+                .andExpect(jsonPath("$.content[0].cabin").value("ECONOMY"))
+                .andExpect(jsonPath("$.content[0].totalSeats").value(124))
                 .andExpect(jsonPath("$.totalElements").value(1));
     }
 
@@ -100,24 +100,24 @@ class SeatInventoryControllerTest {
     void updateSeatInventory_shouldReturn200() throws Exception {
         var cabin = Cabin.valueOf("ECONOMY");
         var flight = new Flight();
-        var req = new SeatInventoryRequest(cabin, 100, flight);
+        var req = new SeatInventoryRequest(cabin, 100, 140L);
         var resp = new SeatInventoryResponse(4L, cabin, 120, 100, 140L);
 
         when(seatInventoryService.update(eq(4L), any())).thenReturn(resp);
 
-        mvc.perform(put("/api/SeatInventories/4")
+        mvc.perform(put("/api/SeatInventory/4")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
-                .andExpect(jsonPath("$.cabinType").value("ECONOMY"))
-                .andExpect(jsonPath("$.totalSeats").value(160))
-                .andExpect(jsonPath("$.availableSeats").value(140));
+                .andExpect(jsonPath("$.cabin").value("ECONOMY"))
+                .andExpect(jsonPath("$.totalSeats").value(120))
+                .andExpect(jsonPath("$.availableSeats").value(100));
     }
 
     @Test
     void deleteSeatInventory_shouldReturn204() throws Exception {
-        mvc.perform(delete("/api/SeatInventories/5"))
+        mvc.perform(delete("/api/SeatInventory/5"))
                 .andExpect(status().isNoContent());
 
         verify(seatInventoryService).delete(5L);

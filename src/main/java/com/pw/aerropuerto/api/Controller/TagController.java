@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @Validated
 public class TagController {
-    private TagService tagService;
+    private  final TagService tagService;
 
     @PostMapping
     public ResponseEntity<TagResponse> createTag(@Valid@RequestBody TagCreateRequest request, UriComponentsBuilder uriComponentsBuilder) {

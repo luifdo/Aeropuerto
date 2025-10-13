@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/SeatInventories")
+@RequestMapping("/api/SeatInventory")
 @RequiredArgsConstructor
 @Validated
 public class SeatInventoryController {
-    private SeatInventoryService seatInventoryService;
+    private final  SeatInventoryService seatInventoryService;
 
     @PostMapping
     public ResponseEntity<SeatInventoryResponse> createSeatInventoryRespone(@Valid @RequestBody SeatInventoryRequest request, UriComponentsBuilder uriComponentsBuilder) {
         var body = seatInventoryService.create(request);
         if (body == null || body.id() == null) {
             return ResponseEntity.internalServerError().build(); // evita NullPointerException
-        }var location = uriComponentsBuilder.path("/api/SeatInventories/{id}").buildAndExpand(body.id()).toUri();
+        }var location = uriComponentsBuilder.path("/api/SeatInventory/{id}").buildAndExpand(body.id()).toUri();
         return ResponseEntity.created(location).body(body);
 
     }

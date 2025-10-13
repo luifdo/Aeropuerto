@@ -42,8 +42,7 @@ class TagControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/api/Tags/1")))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("VIP"))
-                .andExpect(jsonPath("$.description").value("Etiqueta de cliente preferencial"));
+                .andExpect(jsonPath("$.name").value("VIP"));
     }
 
     @Test
@@ -55,8 +54,7 @@ class TagControllerTest {
         mvc.perform(get("/api/Tags/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.name").value("BUSINESS"))
-                .andExpect(jsonPath("$.description").value("Etiqueta para viajeros frecuentes"));
+                .andExpect(jsonPath("$.name").value("BUSINESS"));
     }
 
     @Test

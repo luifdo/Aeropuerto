@@ -1,6 +1,7 @@
 package com.pw.aerropuerto.service;
 
 import com.pw.aerropuerto.api.dto.SeatInventoryDtos.*;
+import com.pw.aerropuerto.dominio.entities.Flight;
 import com.pw.aerropuerto.dominio.entities.SeatInventory;
 import com.pw.aerropuerto.dominio.repositories.SeatInventoryRepository;
 import com.pw.aerropuerto.exception.NotFoundException;
@@ -37,7 +38,7 @@ public class SeatInventoryServicelmpl implements SeatInventoryService {
         SeatInventory seatInventory = seatInventoryRepository.findById(id).orElseThrow(()-> new NotFoundException("SeatInventory not found".formatted(id)));
         if(req.cabin()!=null) seatInventory.setCabin(req.cabin());
         if(req.availableSeats()!=null) seatInventory.setAvailableSeats(req.availableSeats());
-        if(req.flightId()!=null)seatInventory.setFlight(req.flightId());
+        if(req.flightId()!=null)seatInventory.setFlight(Flight.builder().id(req.flightId()).build());
 
         SeatInventory seatInventoryUpdate = seatInventoryRepository.save(seatInventory);
         return SeatInventoryMapper.ToResponse(seatInventoryUpdate);

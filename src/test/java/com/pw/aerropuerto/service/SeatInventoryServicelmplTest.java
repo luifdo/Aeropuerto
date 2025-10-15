@@ -33,8 +33,8 @@ class SeatInventoryServicelmplTest {
     @Test
     void create_debe_guardar_y_devolver_response() {
 
-        Flight flight = Flight.builder().id(100l).build();
-        SeatInventoryRequest req = new SeatInventoryRequest(Cabin.ECONOMY,20,flight);
+        Flight flight = Flight.builder().id(100L).build();
+        SeatInventoryRequest req = new SeatInventoryRequest(Cabin.ECONOMY,20,100L);
         SeatInventory saved = SeatInventory.builder()
                 .id(1L)
                 .Cabin(Cabin.ECONOMY)
